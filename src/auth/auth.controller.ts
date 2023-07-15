@@ -10,16 +10,16 @@ export const createUser = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { email, role, password } = req.body;
+    const { email, password } = req.body;
+
     // Check if phone number is already taken
     const userExist = await UserModel.findOne({ email });
     if (userExist) {
-      res.status(409).json({ message: "Phone number already exists" });
+      res.json({ message: "user-exist" });
       return;
     }
     const user = new UserModel({
       email,
-      role,
       password,
     });
     await user.save();
@@ -28,7 +28,7 @@ export const createUser = async (
     res.status(200).json({
       success: true,
       statusCode: 200,
-      message: "Users created successfully",
+      message: "User created successfully",
       data: usersData,
     });
   } catch (error) {
