@@ -34,25 +34,48 @@ export const getAllBooks = async (
   try {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
+    const { search, filter } = req.query;
     const sort = (req.query.sort as SortOrder) || "asc";
     const sortField = (req.query.sortField as string) || "createdAt";
-    const books = await BookModel.find()
-      .sort({ [sortField]: sort })
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .exec();
-    const booksCount = await BookModel.countDocuments();
-    res.status(200).json({
-      success: true,
-      statusCode: 200,
-      message: "Books retrieved successfully",
-      meta: {
-        page: page,
-        limit: limit,
-        count: booksCount,
-      },
-      data: books,
-    });
+    if (search) {
+      const books = await BookModel.find({
+        [filter as string]: { $regex: search, $options: "i" },
+      })
+        .sort({ [sortField]: sort })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .exec();
+      const booksCount = await BookModel.countDocuments();
+      res.status(200).json({
+        success: true,
+        statusCode: 200,
+        message: "Books retrieved successfully",
+        meta: {
+          page: page,
+          limit: limit,
+          count: booksCount,
+        },
+        data: books,
+      });
+    } else {
+      const books = await BookModel.find()
+        .sort({ [sortField]: sort })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .exec();
+      const booksCount = await BookModel.countDocuments();
+      res.status(200).json({
+        success: true,
+        statusCode: 200,
+        message: "Books retrieved successfully",
+        meta: {
+          page: page,
+          limit: limit,
+          count: booksCount,
+        },
+        data: books,
+      });
+    }
   } catch (error) {
     next(error);
   }
@@ -64,7 +87,7 @@ export const getSingleBook = async (
 ): Promise<void> => {
   try {
     const bookId = req.params.bookId;
-    const book = await BookModel.findOne({ _id: bookId }).populate("seller");
+    const book = await BookModel.findOne({ _id: bookId });
     res.status(200).json({
       success: true,
       statusCode: 200,

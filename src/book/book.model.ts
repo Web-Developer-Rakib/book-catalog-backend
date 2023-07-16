@@ -1,4 +1,4 @@
-import { Document, Schema, model } from "mongoose";
+import { Document, ObjectId, Schema, model } from "mongoose";
 
 // Interface for Book document
 interface IBook {
@@ -6,6 +6,7 @@ interface IBook {
   author: string;
   genre: string;
   reviews: number;
+  user: ObjectId;
   publicationDate: Date;
 }
 
@@ -18,6 +19,7 @@ const bookSchema = new Schema<IBook>(
     author: { type: String, required: true },
     genre: { type: String, required: true },
     reviews: { type: Number, required: true, default: 0 },
+    user: { type: String },
     publicationDate: { type: Date, required: true },
   },
   { timestamps: true }

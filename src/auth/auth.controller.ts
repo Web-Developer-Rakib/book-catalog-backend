@@ -57,7 +57,7 @@ export const refreshToken = async (
     // Find the user in the database based on the decoded user ID
     const user = await UserModel.findById(decoded.id);
     if (!user) {
-      res.status(401).json({ error: "User not found" });
+      res.json("User not found");
     } else {
       // Generate a new access token
       const accessToken = generateAccessToken(user.id, user.role);
