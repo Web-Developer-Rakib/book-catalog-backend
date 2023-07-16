@@ -22,7 +22,6 @@ export const createBook = async (
       });
     }
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };
@@ -105,6 +104,7 @@ export const updateBook = async (
 ): Promise<void> => {
   const bookId = req.params.bookId;
   const updateFields = req.body;
+  console.log(bookId);
   try {
     const book = await BookModel.findById(bookId);
     if (!book) {
@@ -112,7 +112,7 @@ export const updateBook = async (
     } else {
       Object.assign(book, updateFields);
       const updatedBook = await book.save();
-      res.send(200).json({
+      res.sendStatus(200).json({
         success: true,
         statusCode: 200,
         message: "Book updated successfully",
